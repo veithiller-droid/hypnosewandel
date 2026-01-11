@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Impressum – Hypnose Wandel</title>
+  <meta name="description" content="Impressum – Hypnose Wandel.">
+  <meta name="robots" content="index,follow">
+
+  <link rel="icon" href="./images/logo.webp">
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+    <div class="frame">
+  <div class="frame-inner">
+
+  <!-- HEADER (wird per header.html geladen) -->
+  <div data-include="./header.html"></div>
+
+  <main class="section tone-white">
+    <div class="container" style="max-width:900px;">
+      <h1>Impressum</h1>
+      <div class="divider"></div>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Angaben gemäß § 5 TMG</h2>
+      <p class="sectiontext">
+        <strong>Heidi Schimmel</strong><br>
+        Hypnose-Expertin für Frauen im Wandel<br>
+        Zur Ruppertsklamm 7<br>
+        56112 Lahnstein<br>
+        Deutschland
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Kontakt</h2>
+      <p class="sectiontext">
+        Telefon: <a href="tel:+4917661145720">+49 176 611 45 720</a><br>
+        E-Mail: <a href="mailto:info@hypnose-wandel.de">info@hypnose-wandel.de</a>
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Verantwortlich für den Inhalt gemäß § 18 Abs. 2 MStV</h2>
+      <p class="sectiontext">
+        Heidi Schimmel<br>
+        Zur Ruppertsklamm 7, 56112 Lahnstein, Deutschland
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Haftung für Inhalte</h2>
+      <p class="sectiontext">
+        Inhalte dieser Website wurden mit Sorgfalt erstellt. Für Richtigkeit, Vollständigkeit und Aktualität kann keine Gewähr übernommen werden.
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Haftung für Links</h2>
+      <p class="sectiontext">
+        Diese Website enthält ggf. Links zu externen Websites Dritter. Für Inhalte externer Seiten wird keine Verantwortung übernommen; verantwortlich ist der jeweilige Anbieter.
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Urheberrecht</h2>
+      <p class="sectiontext">
+        Inhalte und Werke auf dieser Website unterliegen dem Urheberrecht. Jede Verwertung außerhalb der Grenzen des Urheberrechts bedarf der vorherigen Zustimmung.
+      </p>
+
+      <h2 class="headline--gold" style="margin-top:22px;">Verbraucherstreitbeilegung</h2>
+      <p class="sectiontext">
+        Ich bin nicht verpflichtet und nicht bereit, an Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle teilzunehmen.
+      </p>
+
+      <hr class="line" style="margin:28px 0;">
+
+      <p class="muted small">
+        <a href="./datenschutz.html">Datenschutz</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- FOOTER (wird per footer.html geladen) -->
+  <div data-include="./footer.html"></div>
+
+  <noscript>
+    <div class="container section">
+      <p>Diese Website benötigt JavaScript für Navigation/Content-Laden.</p>
+    </div>
+  </noscript>
+
+  <script type="module">
+    import { includePartials } from "./include.js";
+    import { initNav } from "./site.js";
+    await includePartials();
+    initNav();
+  </script>
+    </div>
+</div>
+
+</body>
+</html>

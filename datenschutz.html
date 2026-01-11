@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Datenschutz – Hypnose Wandel</title>
+  <meta name="description" content="Datenschutzerklärung – Hypnose Wandel.">
+  <meta name="robots" content="index,follow">
+
+  <link rel="icon" href="./images/logo.webp">
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+  <!-- HEADER (wird per header.html geladen) -->
+  <div data-include="./header.html"></div>
+
+  <main class="section tone-white">
+    <div class="container" style="max-width:900px;">
+      <h1>Datenschutzerklärung</h1>
+      <p class="muted small">Stand: Januar 2026</p>
+
+      <div class="divider"></div>
+
+      <h3>1. Verantwortliche Stelle</h3>
+      <p>
+        Heidi Schimmel<br>
+        Zur Ruppertsklamm 7<br>
+        56112 Lahnstein<br>
+        Telefon: <a href="#" data-tel></a><br>
+        E-Mail: <a href="#" data-mail></a>
+      </p>
+
+      <h3>2. Allgemeine Hinweise</h3>
+      <p>
+        Diese Datenschutzerklärung informiert darüber, welche personenbezogenen Daten beim Besuch dieser Website
+        verarbeitet werden und zu welchen Zwecken dies geschieht.
+      </p>
+
+      <h3>3. Zugriffsdaten (Server-Logs)</h3>
+      <p>
+        Beim Aufruf dieser Website werden durch den Webserver automatisch Informationen in sogenannten Server-Logfiles
+        gespeichert. Dazu gehören typischerweise: IP-Adresse, Datum und Uhrzeit des Abrufs, aufgerufene Seite/Datei,
+        übertragene Datenmenge, Browsertyp/Version, Betriebssystem, Referrer-URL.
+      </p>
+      <p>
+        Zweck ist die Bereitstellung der Website sowie die Sicherstellung von Stabilität und Sicherheit.
+      </p>
+
+      <h3>4. Kontaktformular</h3>
+      <p>
+        Wenn du das Kontaktformular nutzt, werden die von dir eingegebenen Daten (z. B. Name, E-Mail, Nachricht)
+        verarbeitet, um deine Anfrage zu bearbeiten.
+      </p>
+      <p>
+        Hinweis zur Technik: Das Formular kann je nach Einrichtung über einen externen Formularanbieter (z. B. Formspree,
+        Basin, Netlify Forms) versendet werden. In diesem Fall werden die Formulardaten an diesen Dienst übermittelt.
+        Die konkrete Übermittlung hängt von der auf der Kontaktseite hinterlegten Konfiguration ab.
+      </p>
+
+      <h3>5. Terminbuchung (Tentary)</h3>
+      <p>
+        Für Terminbuchung/Checkout nutzt diese Website Links zu einem externen Anbieter (z. B. Tentary).
+        Wenn du einen solchen Link anklickst, verlässt du diese Website und es gelten die Datenschutzbestimmungen
+        des jeweiligen Anbieters. Personenbezogene Daten werden dann dort verarbeitet.
+      </p>
+
+      <h3>6. Cookies / Local Storage</h3>
+      <p>
+        Diese Website selbst verwendet keine Tracking-Cookies für Werbung. Technisch können jedoch je nach Hosting,
+        eingebundenen Diensten oder Browser-Einstellungen Cookies/ähnliche Speichertechnologien eingesetzt werden.
+      </p>
+
+      <h3>7. Eingebettete Videos</h3>
+      <p>
+        Wenn auf dieser Website ein Video lokal eingebunden ist (Datei auf dem eigenen Server), werden beim Abspielen
+        lediglich die technisch notwendigen Abrufe der Mediendatei durchgeführt. Wenn externe Videoplattformen
+        eingebunden werden, gelten die Datenschutzbestimmungen der jeweiligen Plattform.
+      </p>
+
+      <h3>8. Deine Rechte</h3>
+      <p>
+        Du hast – im Rahmen der gesetzlichen Voraussetzungen – Rechte auf Auskunft, Berichtigung, Löschung,
+        Einschränkung der Verarbeitung, Datenübertragbarkeit sowie Widerspruch gegen die Verarbeitung.
+      </p>
+
+      <h3>9. Beschwerderecht</h3>
+      <p>
+        Du hast das Recht, dich bei einer Datenschutzaufsichtsbehörde zu beschweren, wenn du der Ansicht bist,
+        dass die Verarbeitung deiner personenbezogenen Daten gegen Datenschutzrecht verstößt.
+      </p>
+
+      <h3>10. Änderung dieser Datenschutzerklärung</h3>
+      <p>
+        Diese Datenschutzerklärung kann angepasst werden, wenn sich Inhalte, eingesetzte Dienste oder rechtliche
+        Anforderungen ändern.
+      </p>
+
+      <div class="spacer"></div>
+      <p class="muted small">
+        <a href="./impressum.html">Impressum</a>
+      </p>
+    </div>
+  </main>
+
+  <!-- FOOTER (wird per footer.html geladen) -->
+  <div data-include="./footer.html"></div>
+
+  <noscript>
+    <div class="container section">
+      <p>Diese Website benötigt JavaScript für Navigation/Content-Laden.</p>
+    </div>
+  </noscript>
+
+  <script type="module">
+    import { includePartials } from "./include.js";
+    import { loadJSON, fillConfig } from "./content.js";
+    import { initNav } from "./site.js";
+
+    await includePartials();
+
+    const cfg = await loadJSON("./config.json");
+    fillConfig(cfg);
+    initNav();
+  </script>
+</body>
+</html>

@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>FAQ – Hypnose Wandel</title>
+  <meta name="description" content="FAQ – Häufige Fragen zu Hypnose Wandel und Virtuelles Magenband Premium.">
+  <meta name="robots" content="index,follow">
+
+  <link rel="icon" href="./logo.webp">
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+  <div class="frame">
+  <div class="frame-inner">
+
+  <!-- HEADER (wird per header.html geladen) -->
+  <div data-include="./header.html"></div>
+
+  <main class="section">
+    <div class="container">
+      <h1 data-text="faq.title"></h1>
+
+      <div id="faq-list" class="accordion"></div>
+
+      <div class="spacer"></div>
+
+     
+  </main>
+
+  <!-- FOOTER (wird per footer.html geladen) -->
+  <div data-include="./footer.html"></div>
+
+  <noscript>
+    <div class="container section">
+      <p>Diese Website benötigt JavaScript für Navigation/Content-Laden.</p>
+    </div>
+  </noscript>
+
+  <script type="module">
+    import { includePartials } from "./include.js";
+    import { loadJSON, fillConfig, fillText } from "./content.js";
+    import { initNav } from "./site.js";
+
+    function getByPath(obj, path) {
+      return path.split(".").reduce((o, k) =>
+        (o && Object.prototype.hasOwnProperty.call(o, k)) ? o[k] : undefined
+      , obj);
+    }
+
+    function bindConfigHrefs(cfg) {
+      document.querySelectorAll("[data-config-href]").forEach(a => {
+        const path = a.getAttribute("data-config-href");
+        const val = getByPath(cfg, path);
+        if (typeof val === "string" && val.length > 0) a.href = val;
+      });
+    }
+
+    function buildFAQ(texts) {
+      const items = texts?.faq?.items || [];
+      const wrap = document.getElementById("faq-list");
+      if (!wrap) return;
+
+      if (!Array.isArray(items) || items.length === 0) {
+        wrap.innerHTML = "<p class=\"muted\">FAQ folgt in Kürze.</p>";
+        return;
+      }
+
+      wrap.innerHTML = items.map((it, idx) => {
+        const q = (it?.q ?? "").toString();
+        const a = (it?.a ?? "").toString();
+        const open = "";
+        return `
+          <details${open}>
+            <summary>${escapeHTML(q)}</summary>
+            <div class="accordion-body">
+              <p>${escapeHTML(a).replace(/\n/g, "<br>")}</p>
+            </div>
+          </details>
+        `;
+      }).join("");
+    }
+
+    function escapeHTML(s) {
+      return s
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll("\"", "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    await includePartials();
+
+    const [cfg, texts] = await Promise.all([
+      loadJSON("./config.json"),
+      loadJSON("./texts.de.json")
+    ]);
+
+    fillConfig(cfg);
+    fillText(texts, "faq");
+    initNav();
+
+    bindConfigHrefs(cfg);
+    buildFAQ(texts);
+  </script>
+    </div>
+</div>
+
+</body>
+</html>

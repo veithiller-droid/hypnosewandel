@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Kontakt – Hypnose Wandel</title>
+  <meta name="description" content="Kontakt – Hypnose Wandel. Nachricht senden oder Termin vereinbaren.">
+  <meta name="robots" content="index,follow">
+
+  <link rel="icon" href="./logo.webp">
+  <link rel="stylesheet" href="./site.css">
+</head>
+
+<body>
+  <div class="frame">
+  <div class="frame-inner">
+
+  <!-- HEADER (wird per header.html geladen) -->
+  <div data-include="./header.html"></div>
+
+  <main class="section tone-sand">
+    <div class="container contact-page">
+      <h1 class="headline--dark" data-text="kontakt.title"></h1>
+      <div class="divider"></div>
+      <p class="lead" data-text="kontakt.intro"></p>
+
+      <div class="contact-grid contact-grid--spaced">
+        <!-- FORM -->
+        <section class="card pad card--white">
+          <h2 class="h3 headline--gold">Nachricht senden</h2>
+          <div class="divider"></div>
+
+          <!--
+            data-endpoint:
+            - optional, wenn du z.B. Formspree / Basin / Netlify Forms nutzt
+            - lass leer, wenn du (noch) kein Backend hast -> Button tut dann nichts
+          -->
+          <form data-contact-form data-endpoint="">
+            <div class="grid2">
+              <label>Vorname
+                <input name="vorname" autocomplete="given-name" required>
+              </label>
+              <label>Nachname
+                <input name="nachname" autocomplete="family-name" required>
+              </label>
+            </div>
+
+            <label>E-Mail
+              <input type="email" name="email" autocomplete="email" required>
+            </label>
+
+            <label>Betreff
+              <input name="betreff" autocomplete="off">
+            </label>
+
+            <label>Ihre Nachricht
+              <textarea name="nachricht" rows="7" required></textarea>
+            </label>
+
+            <label class="check">
+              <input type="checkbox" required>
+              <span data-text="kontakt.consentText"></span>
+              <a href="./datenschutz.html">Datenschutzerklärung</a>
+            </label>
+
+            <div class="cta-row">
+              <button class="btn" type="submit">Senden</button>
+            </div>
+
+            <p class="muted small" data-form-status></p>
+          </form>
+        </section>
+
+        <!-- DETAILS -->
+        <aside class="card pad card--sand">
+          <h2 class="h3 headline--dark">Direktkontakt</h2>
+          <div class="divider"></div>
+
+          <p class="muted small">
+            Telefon<br>
+            <a href="#" data-tel></a>
+          </p>
+
+          <p class="muted small">
+            E-Mail<br>
+            <a href="#" data-mail></a>
+          </p>
+
+          <hr class="line">
+
+          <h3 class="h4 headline--gold">Adresse</h3>
+          <p class="muted" data-config="addressShort"></p>
+
+          <div class="spacer"></div>
+
+          <p class="muted small" style="margin-top:12px;">
+            <a href="./impressum.html">Impressum</a> ·
+            <a href="./datenschutz.html">Datenschutz</a>
+          </p>
+        </aside>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER (wird per footer.html geladen) -->
+  <div data-include="./footer.html"></div>
+
+  <noscript>
+    <div class="container section">
+      <p>Diese Website benötigt JavaScript für Navigation/Content-Laden.</p>
+    </div>
+  </noscript>
+
+  <script type="module">
+    import { includePartials } from "./include.js";
+    import { loadJSON, fillConfig, fillText } from "./content.js";
+    import { initNav } from "./site.js";
+    import { initContactForm } from "./form.js";
+
+    function getByPath(obj, path) {
+      return path.split(".").reduce((o, k) =>
+        (o && Object.prototype.hasOwnProperty.call(o, k)) ? o[k] : undefined
+      , obj);
+    }
+
+    function bindConfigHrefs(cfg) {
+      document.querySelectorAll("[data-config-href]").forEach(a => {
+        const path = a.getAttribute("data-config-href");
+        const val = getByPath(cfg, path);
+        if (typeof val === "string" && val.length > 0) a.href = val;
+      });
+    }
+
+    await includePartials();
+
+    const [cfg, texts] = await Promise.all([
+      loadJSON("./config.json"),
+      loadJSON("./texts.de.json")
+    ]);
+
+    fillConfig(cfg);
+    fillText(texts, "kontakt");
+    initNav();
+
+    bindConfigHrefs(cfg);
+    initContactForm();
+  </script>
+    </div>
+</div>
+
+</body>
+</html>
