@@ -255,17 +255,7 @@
 
             <div id="result"></div>
             <!-- MODAL: Ausführliche Auswertung (Popup) -->
-<dialog id="resultModal" class="modal">
-  <div class="modal-head">
-    <strong>Deine Auswertung</strong>
-    <button type="button" class="modal-close" data-close-modal>×</button>
-  </div>
-  <div id="resultModalBody" class="modal-body"></div>
 
-  <div class="cta-row" style="margin-top:14px;">
-    <button type="button" class="btn btn-ghost" data-close-modal>Schließen</button>
-  </div>
-</dialog>
 
           </div>
         </div>
@@ -297,5 +287,25 @@
 
     </div>
   </div>
+  <!-- QUIZ MODAL (Overlay) -->
+<div id="quizModal" class="qmodal" hidden>
+  <div class="qmodal__backdrop" data-qmodal-close></div>
+
+  <div class="qmodal__panel" role="dialog" aria-modal="true" aria-labelledby="qmodalTitle">
+    <div class="qmodal__head">
+      <div id="qmodalTitle" class="qmodal__title">Deine Auswertung</div>
+      <button type="button" class="qmodal__close" aria-label="Schließen" data-qmodal-close>×</button>
+    </div>
+
+    <div id="quizModalBody" class="qmodal__body"></div>
+
+    <div class="qmodal__foot">
+      <div class="cta-row" style="margin:0;">
+        <button type="button" class="btn btn-ghost" data-qmodal-close>Schließen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

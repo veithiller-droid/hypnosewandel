@@ -18,13 +18,13 @@ function norm(v, min, max) {
 }
 
 function val(name) {
-  const el = document.querySelector('input[name="' + name + '"]:checked');
+  const el = document.querySelector(`input[name="${name}"]:checked`);
   return el ? el.value : null;
 }
 
 function fullName() {
-  const fn = (document.getElementById("fname").value || "").trim();
-  const ln = (document.getElementById("lname").value || "").trim();
+  const fn = (document.getElementById("fname")?.value || "").trim();
+  const ln = (document.getElementById("lname")?.value || "").trim();
   return `${fn} ${ln}`.trim();
 }
 
@@ -56,7 +56,6 @@ function computeScore() {
   const a8 = mapQ8[(val("q8") || "").toLowerCase()] ?? 0;
 
   const score = a1 * W.q1 + a2 * W.q2 + a3 * W.q3 + a4 * W.q4 + a5 * W.q5 + a6 * W.q6 + a8 * W.q8;
-
   return Math.round(score * 100);
 }
 
@@ -67,7 +66,7 @@ function bucketFor(p) {
 }
 
 /* ==============================
-   Modal (Popup) – erzeugt sich selbst, falls nicht vorhanden
+   Modal (Popup) – echtes <dialog>, Close funktioniert
 ============================== */
 function ensureModalStyles() {
   if (document.getElementById("quiz-modal-styles")) return;
@@ -76,18 +75,24 @@ function ensureModalStyles() {
   style.id = "quiz-modal-styles";
   style.textContent = `
     dialog#resultModal.modal{
-      width:min(820px, calc(100% - 28px));
+      width:min(860px, calc(100% - 28px));
       border:1px solid var(--line);
       border-radius:16px;
-      padding:16px;
+      padding:0;
       background:#fff;
       box-shadow:0 18px 42px rgba(25,25,25,.18);
     }
     dialog#resultModal.modal::backdrop{ background:rgba(25,25,25,.55); }
+
     #resultModal .modal-head{
       display:flex; align-items:center; justify-content:space-between; gap:12px;
-      margin-bottom:12px;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      background:rgba(255,255,255,.96);
+      position:sticky; top:0;
     }
+    #resultModal .modal-title{ font-weight:800; }
+
     #resultModal .modal-close{
       width:38px;height:38px;
       border-radius:12px;
@@ -96,12 +101,32 @@ function ensureModalStyles() {
       cursor:pointer;
       font-size:22px;
       line-height:1;
+      font-weight:800;
     }
+
     #resultModal .modal-body{
+      padding:16px;
       max-height:70vh;
       overflow:auto;
-      padding-right:4px;
     }
+
+    #resultModal .modal-foot{
+      padding:14px 16px;
+      border-top:1px solid var(--line);
+      background:rgba(255,255,255,.96);
+    }
+
+    /* Content-Optik */
+    .r-h1{ margin:0 0 10px 0; color:#b1976b; font-size:24px; line-height:1.2; }
+    .r-p{ margin:0 0 12px 0; font-size:16px; line-height:1.6; color:#333; }
+    .r-cta{ display:flex; justify-content:center; margin-top:14px; }
+    .r-btn{
+      display:inline-block;
+      background:#b1976b; color:#fff; text-decoration:none;
+      padding:12px 18px; border-radius:12px;
+      font-weight:800;
+    }
+    .r-note{ margin-top:12px; color:var(--muted); font-size:14px; }
   `;
   document.head.appendChild(style);
 }
@@ -117,161 +142,92 @@ function ensureModal() {
   dlg.className = "modal";
   dlg.innerHTML = `
     <div class="modal-head">
-      <strong>Deine Auswertung</strong>
-      <button type="button" class="modal-close" data-close-modal>×</button>
+      <div class="modal-title">Deine Auswertung</div>
+      <button type="button" class="modal-close" data-close-modal aria-label="Schließen">×</button>
     </div>
+
     <div id="resultModalBody" class="modal-body"></div>
-    <div class="cta-row" style="margin-top:14px;">
-      <button type="button" class="btn btn-ghost" data-close-modal>Schließen</button>
+
+    <div class="modal-foot">
+      <div class="cta-row" style="margin:0;">
+        <button type="button" class="btn btn-ghost" data-close-modal>Schließen</button>
+      </div>
     </div>
   `;
   document.body.appendChild(dlg);
 
-  // Close Buttons
+  // Close buttons
   dlg.querySelectorAll("[data-close-modal]").forEach((btn) => {
     btn.addEventListener("click", () => dlg.close());
   });
 
-  // Klick außerhalb schließt
+  // Klick auf Backdrop schließt (wenn direkt das dialog getroffen wird)
   dlg.addEventListener("click", (e) => {
-    const r = dlg.getBoundingClientRect();
-    const inside = r.top <= e.clientY && e.clientY <= r.bottom && r.left <= e.clientX && e.clientX <= r.right;
-    if (!inside) dlg.close();
+    if (e.target === dlg) dlg.close();
   });
 
   return dlg;
 }
 
-function openResultModal(html) {
+function openResultModal(contentHtml) {
   const dlg = ensureModal();
   const body = dlg.querySelector("#resultModalBody");
   if (!body) return;
 
-  body.innerHTML = html;
+  body.innerHTML = contentHtml;
   dlg.showModal();
+
+  // Scroll im Modal nach oben
+  body.scrollTop = 0;
 }
 
 /* ==============================
-   Templates (Modal-Content)
+   Templates (nur HTML-Fragmente!)
 ============================== */
-const TAB_FONT = "system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif";
-
-function cardWrap(title, innerHtml) {
+function tplHigh(pct, name) {
+  const hello = name ? `Hallo ${name},` : `Hallo,`;
   return `
-    <div style="font-family:${TAB_FONT}; color:#333;">
-      <h2 style="text-align:center; color:#b1976b; font-size:26px; margin:6px 0 16px;">
-        ${title}
-      </h2>
-      <div style="background:#fff; border:1px solid #b1976b40; border-radius:10px; padding:18px;">
-        ${innerHtml}
-      </div>
+    <h2 class="r-h1">Du bist bereit für Veränderung</h2>
+    <p class="r-p">${hello}</p>
+    <p class="r-p">Dein Ergebnis liegt bei <strong>${pct}%</strong>. Das spricht für eine hohe innere Bereitschaft – Veränderung darf jetzt leicht und stimmig werden.</p>
+    <p class="r-p">Im kostenlosen Erstgespräch klären wir, ob das virtuelle Magenband gerade gut zu dir passt und wie Hypnose dich am besten unterstützt.</p>
+    <div class="r-cta">
+      <a class="r-btn" href="${BOOKING_LINK}" target="_blank" rel="noopener">Kostenloses Erstgespräch buchen</a>
     </div>
+    <div class="r-note">Der Link öffnet in einem neuen Tab.</div>
   `;
 }
 
-function templateHigh(pct, name) {
+function tplMid(pct, name) {
   const hello = name ? `Hallo ${name},` : `Hallo,`;
-  return cardWrap(
-    "Du bist bereit für Veränderung",
-    `
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">${hello}</p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Dein Ergebnis liegt bei <strong>${pct} %</strong>. Das ist ein klarer Hinweis auf eine hohe innere Bereitschaft.
-      Die Signale sind deutlich: Ein Teil in dir hat längst entschieden, dass es leichter, ruhiger und stimmiger werden darf.
-      Diese Klarheit entsteht nicht zufällig – sie entsteht, wenn Körper und Unterbewusstsein in dieselbe Richtung zeigen.
-    </p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Du bist an einem Punkt, an dem Veränderung nicht mehr nur ein Wunsch ist, sondern ein natürlicher nächster Schritt.
-      Genau hier beginnt echte Transformation.
-    </p>
-
-    <p style="margin:0 0 16px 0; font-size:18px; line-height:1.6;">
-      Ich lade dich zu einem kostenlosen Erstgespräch ein. Lass uns gemeinsam herausfinden, wie dein Weg aussehen kann
-      und in welcher Weise dich Hypnose optimal unterstützen kann. Sanft, strukturiert und komplett auf dich abgestimmt.
-    </p>
-
-    <div style="text-align:center; margin-top:10px;">
-      <a href="${BOOKING_LINK}" target="_blank" rel="noopener"
-         style="display:inline-block; background:#b1976b; color:#fff; text-decoration:none; padding:12px 20px; border-radius:10px; font-size:16px; font-weight:700;">
-        Kostenloses Erstgespräch buchen
-      </a>
+  return `
+    <h2 class="r-h1">Du bist auf dem Weg</h2>
+    <p class="r-p">${hello}</p>
+    <p class="r-p">Dein Ergebnis liegt bei <strong>${pct}%</strong>. Du hast bereits eine gute Basis – jetzt hilft oft ein klarer nächster Schritt.</p>
+    <p class="r-p">Im kostenlosen Erstgespräch schauen wir gemeinsam, welches Tempo und welche Unterstützung für dich gerade passt.</p>
+    <div class="r-cta">
+      <a class="r-btn" href="${BOOKING_LINK}" target="_blank" rel="noopener">Kostenloses Erstgespräch buchen</a>
     </div>
-  `
-  );
+    <div class="r-note">Der Link öffnet in einem neuen Tab.</div>
+  `;
 }
 
-function templateMid(pct, name) {
+function tplLow(pct, name) {
   const hello = name ? `Hallo ${name},` : `Hallo,`;
-  return cardWrap(
-    "Du bist auf dem Weg",
-    `
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">${hello}</p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Dein Ergebnis liegt bei <strong>${pct} %</strong>. Das entspricht dem mittleren Bereich.
-      Etwas in dir spürt bereits, dass Veränderung gut tun würde – vielleicht nicht abrupt, sondern in einem Tempo,
-      das sich für dich wirklich stimmig anfühlt.
-    </p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Oft braucht es nur einen klaren nächsten Schritt, um vom inneren Wissen ins entspannte Tun zu kommen.
-      Die Basis dafür ist da.
-    </p>
-
-    <p style="margin:0 0 16px 0; font-size:18px; line-height:1.6;">
-      Ich lade dich zu einem kostenlosen Erstgespräch ein. Lass uns gemeinsam prüfen,
-      ob das virtuelle Magenband gerade gut zu dir passt und wie Hypnose dich optimal unterstützen kann.
-      Ohne Druck, mit Klarheit und mit voller Freiheit für deine Entscheidung.
-    </p>
-
-    <div style="text-align:center; margin-top:10px;">
-      <a href="${BOOKING_LINK}" target="_blank" rel="noopener"
-         style="display:inline-block; background:#b1976b; color:#fff; text-decoration:none; padding:12px 20px; border-radius:10px; font-size:16px; font-weight:700;">
-        Kostenloses Erstgespräch buchen
-      </a>
+  return `
+    <h2 class="r-h1">Veränderung beginnt mit einem Gedanken</h2>
+    <p class="r-p">${hello}</p>
+    <p class="r-p">Dein Ergebnis liegt bei <strong>${pct}%</strong>. Vielleicht braucht dein System gerade zuerst Ruhe und Stabilität – das ist völlig okay.</p>
+    <p class="r-p">Ein sanfter Einstieg kann helfen: eine kostenlose Hypnose als kleine Auszeit, ohne Druck.</p>
+    <div class="r-cta">
+      <a class="r-btn" href="${FREEBIE_LINK}" target="_blank" rel="noopener">Gratis-Hypnose anhören</a>
     </div>
-  `
-  );
-}
-
-function templateLow(pct, name) {
-  const hello = name ? `Hallo ${name},` : `Hallo,`;
-  return cardWrap(
-    "Veränderung beginnt mit einem Gedanken",
-    `
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">${hello}</p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Dein Ergebnis liegt bei <strong>${pct} %</strong> und damit im unteren Bereich.
-      Das kann bedeuten, dass dein Fokus im Moment noch auf anderen Themen liegt
-      oder dass dein System zuerst Ruhe und Stabilität braucht, bevor große Schritte leicht werden.
-    </p>
-
-    <p style="margin:0 0 12px 0; font-size:18px; line-height:1.6;">
-      Genau dafür ist ein sanfter Einstieg ideal.
-    </p>
-
-    <p style="margin:0 0 16px 0; font-size:18px; line-height:1.6;">
-      Ich lade dich ein, dir in der Zwischenzeit eine kostenlose Hypnose zu gönnen.
-      Sie hilft dir, zur Ruhe zu kommen, dich wieder mit deinem Körper zu verbinden
-      und Schritt für Schritt Vertrauen aufzubauen – ganz ohne Druck.
-      Wenn du später merkst, dass du mehr willst, ist der nächste Schritt jederzeit möglich.
-    </p>
-
-    <div style="text-align:center; margin-top:10px;">
-      <a href="${FREEBIE_LINK}" target="_blank" rel="noopener"
-         style="display:inline-block; background:#b1976b; color:#fff; text-decoration:none; padding:12px 20px; border-radius:10px; font-size:16px; font-weight:700;">
-        Gratis-Hypnose anhören
-      </a>
-    </div>
-  `
-  );
+    <div class="r-note">Der Link öffnet in einem neuen Tab.</div>
+  `;
 }
 
 /* ==============================
-   Inline-Auswertung im aktuellen Tab (kurz)
+   Inline-Auswertung (kurz)
 ============================== */
 function renderInline(p) {
   const blocks = {
@@ -313,17 +269,29 @@ if (submitBtn) {
       return;
     }
 
+    // Fragen-Check (damit nicht „leere“ Scores rauskommen)
+    const required = ["q1","q2","q3","q4","q5","q6","q7","q8"];
+    for (const q of required) {
+      if (!val(q)) {
+        alert("Bitte beantworte alle Fragen, damit wir dich sauber auswerten können.");
+        // Scroll zur ersten offenen Frage:
+        const first = document.querySelector(`input[name="${q}"]`);
+        if (first) first.scrollIntoView({ behavior: "smooth", block: "center" });
+        return;
+      }
+    }
+
     const p = computeScore();
     const name = fullName();
 
     renderInline(p);
 
     const key = bucketFor(p);
-    let html;
-    if (key === "high") html = templateHigh(p, name);
-    else if (key === "mid") html = templateMid(p, name);
-    else html = templateLow(p, name);
+    let content = "";
+    if (key === "high") content = tplHigh(p, name);
+    else if (key === "mid") content = tplMid(p, name);
+    else content = tplLow(p, name);
 
-    openResultModal(html);
+    openResultModal(content);
   });
 }
