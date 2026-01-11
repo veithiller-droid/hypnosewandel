@@ -1,0 +1,20 @@
+{
+  "siteName": "Hypnose Wandel",
+  "brandName": "Heidi Schimmel",
+  "phone": "+49 176 611 45 720",
+  "email": "info@hypnose-wandel.de",
+  "addressShort": "56112 Lahnstein",
+  "booking": {
+    "buyUrl": "https://shop.tentary.com/DEIN-PRODUKT-LINK",
+     "consultUrl": "https://heidischimmel.tentary.com/p/YMDdrH/checkout"
+  },
+  "nav": [
+    { "label": "Start", "href": "./index.html#start" },
+    { "label": "Über mich", "href": "./index.html#Uber-mich" },
+    { "label": "Hypnose", "href": "./index.html#Hypnose" },
+    { "label": "Gratis Download", "href": "./gratis-download.html" },
+    { "label": "Quiz", "href": "./quiz.html" },
+    { "label": "FAQ", "href": "./faq.html" },
+    { "label": "Kontakt", "href": "./kontakt.html" }
+  ]
+}
